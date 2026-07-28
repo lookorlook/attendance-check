@@ -1,0 +1,27 @@
+{
+  "_说明": "多国考勤整合 - 通用配置模板",
+  "_使用": "复制此文件为 config_YYYYMM.json，修改 year/month/country/file_paths 后运行",
+  "_country": "可选值: belgium, france, 或创建自己的 rules/{code}.json",
+
+  "country": "belgium",
+  "year": 2026,
+  "month": 7,
+
+  "file_paths": {
+    "data1": "在此填写系统打卡Excel的绝对路径",
+    "data2": "在此填写PLANNING排班Excel的绝对路径",
+    "mapping": "工号映射Excel的绝对路径（可选，无则留空）",
+    "output_dir": "output"
+  },
+
+  "prev_month_json": "",
+
+  "manual_overrides": {
+    "_说明": "手工确认的考勤覆盖（可选）",
+    "_示例": {
+      "shenyuan": {
+        "7/10": { "actual_hours": 7.5, "note": "有上班卡无下班卡，人工确认" }
+      }
+    }
+  }
+}

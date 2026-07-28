@@ -1,0 +1,61 @@
+{
+  "country": {
+    "code": "fr",
+    "name": "法国 (France)",
+    "name_en": "France",
+    "description": "法国考勤规则 — 35小时工作周，加班费梯度计算"
+  },
+  "_说明_": "法国以35小时法定周工时闻名。超过35h即产生加班费，按梯度递增。不设TOIL（调休）池，全部按加班费支付。",
+  "employee_classes": [
+    {
+      "class_name": "standard",
+      "label": "标准员工（所有员工）",
+      "standard_hours": {
+        "type": "fixed_daily",
+        "hours_per_day": 7.0
+      },
+      "lunch_deduction_hours": 0.5,
+      "weekly_pool": {
+        "normal_up_to": 35,
+        "toil_from": 35,
+        "toil_up_to": 35,
+        "overtime_100_above": 35,
+        "overtime_rate": 1.25
+      },
+      "weekly_pool_overtime_2": {
+        "threshold": 43,
+        "rate": 1.5
+      }
+    }
+  ],
+  "_paid_leave_note": "法国带薪假：CP (congés payés), MAL (maladie), AT (accident du travail) 等",
+  "paid_leave_types": [
+    "CP",
+    "MAL",
+    "AT",
+    "Férié",
+    "RTT"
+  ],
+  "leave_types": {
+    "CP": "带薪年假",
+    "MAL": "病假",
+    "AT": "工伤",
+    "Férié": "公共假期",
+    "RTT": "减缩工时假",
+    "ABS": "缺勤",
+    "OFF": "休息",
+    "FP": "产假",
+    "PAT": "陪产假"
+  },
+  "leave_patterns": {
+    "RECUP": [],
+    "Férié": [
+      "F[eé]ri[eé]"
+    ]
+  },
+  "data_processing": {
+    "name_match_threshold": 0.8,
+    "snap_tolerance_to_standard": 0.15,
+    "cross_day_threshold_hour": 5.0
+  }
+}
