@@ -1,0 +1,10 @@
+{
+  "country": "belgium",
+  "year": 2026,
+  "month": 7,
+  "file_paths": {
+    "data1": "D:/Documents/Downloads/checkinout20260722135617.xlsx",
+    "data2": "D:/Documents/Downloads/20260721.xlsx",
+    "output_dir": "output"
+  }
+}

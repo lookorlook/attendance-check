@@ -1,0 +1,50 @@
+{
+  "country": {
+    "code": "your_country_code",
+    "name": "您的国家名称 (Your Country)",
+    "name_en": "Your Country Name",
+    "description": "在此描述您国家的考勤规则特点"
+  },
+  "_说明_": "=== 员工类别定义 ===",
+  "_说明2_": "每个类别是一个对象，包含 class_name/label/names(可选)/standard_hours/lunch_deduction_hours/weekly_pool",
+  "_说明3_": "standard_hours.type 支持 'fixed_daily'（固定日工时）或 'grouped'（分组制，如白领每5天一循环）",
+  "employee_classes": [
+    {
+      "class_name": "standard",
+      "label": "标准员工",
+      "_names_": "属于此类别的人员名单（填写大写）。空名单表示除其他类别外的所有员工",
+      "names": [],
+      "standard_hours": {
+        "type": "fixed_daily",
+        "hours_per_day": 8.0
+      },
+      "lunch_deduction_hours": 0.5,
+      "_weekly_pool_": "周总工时池：低于 normal_up_to 全部归零，normal~toil_up_to 算调休(TOIL)，超过 overtime_100_above 算加班费",
+      "weekly_pool": {
+        "normal_up_to": 40,
+        "toil_from": 40,
+        "toil_up_to": 44,
+        "overtime_100_above": 44,
+        "overtime_rate": 1.0
+      }
+    }
+  ],
+  "paid_leave_types": [
+    "annual_leave",
+    "sick_leave",
+    "public_holiday"
+  ],
+  "leave_types": {
+    "AL": "年假",
+    "SL": "病假",
+    "PH": "公共假期",
+    "OFF": "休息",
+    "ABS": "缺勤"
+  },
+  "leave_patterns": {},
+  "data_processing": {
+    "name_match_threshold": 0.82,
+    "snap_tolerance_to_standard": 0.15,
+    "cross_day_threshold_hour": 5.0
+  }
+}
