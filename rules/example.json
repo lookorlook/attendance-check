@@ -43,7 +43,7 @@
   },
   "leave_patterns": {},
   "data_processing": {
-    "name_match_threshold": 0.82,
+    "name_match_threshold": 0.8,
     "snap_tolerance_to_standard": 0.15,
     "cross_day_threshold_hour": 5.0
   }

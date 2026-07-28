@@ -1,0 +1,89 @@
+{
+  "country": {
+    "code": "be",
+    "name": "比利 (Belgium)",
+    "name_en": "Belgium",
+    "description": "比利考勤规则 — 38h¿质时工作周，佣物加与TOIL调休则別，帮我内一阶段ﾥ了专个类别"
+  },
+  "_说明_": "=== 员工类别定义 ===",
+  "employee_classes": [
+    {
+      "class_name": "blue_collar",
+      "label": "蓝领",
+      "names": [
+        "ZAKIA TERFAS",
+        "ZUREL SAMET",
+        "FRANCOIS LIPPOLIS",
+        "FRANÇOIS LIPPOLIS",
+        "BENJAMIN TORFS",
+        "TONY ROCCHIA",
+        "ESQUIVEL EDUARDO",
+        "SANTOS RAYMUNDO",
+        "BARRY BARRY",
+        "SEBASTIEN BERNARD",
+        "SÉBASTIEN BERNARD"
+      ],
+      "standard_hours": {
+        "type": "fixed_daily",
+        "hours_per_day": 7.6
+      },
+      "lunch_deduction_hours": 0.5,
+      "weekly_pool": {
+        "normal_up_to": 38,
+        "toil_from": 38,
+        "toil_up_to": 40,
+        "overtime_100_above": 40,
+        "overtime_rate": 1.0
+      }
+    },
+    {
+      "class_name": "white_collar",
+      "label": "白领",
+      "standard_hours": {
+        "type": "grouped",
+        "group_size": 5,
+        "hours_1to4": 7.5,
+        "hours_5plus": 7.0
+      },
+      "lunch_deduction_hours": 0.5,
+      "weekly_pool": {
+        "normal_up_to": 37,
+        "toil_from": 37,
+        "toil_up_to": 38,
+        "overtime_100_above": 38,
+        "overtime_rate": 1.0
+      }
+    }
+  ],
+  "paid_leave_types": [
+    "VA",
+    "CM",
+    "Congé mariage",
+    "Férié",
+    "RECUP"
+  ],
+  "leave_types": {
+    "CM": "病假",
+    "VA": "年假",
+    "Mi temps médical": "医疗半工",
+    "ABSENT": "缺勤",
+    "Congé mariage": "媚假",
+    "OFF": "休息",
+    "OFF demi journée am": "半天休息(上午)",
+    "Férié": "公共假期",
+    "FIN": "结束/离职",
+    "A déterminer": "待定"
+  },
+  "_leave_patterns": "正则表达式匹配的请假类型（无需精确匹配的）",
+  "leave_patterns": {
+    "RECUP": [
+      "Récup\\s+heures\\s+suppl[ée]mentaires",
+      "Récup\\s+fée]ri[ée]"
+    ]
+  },
+  "data_processing": {
+    "name_match_threshold": 0.82,
+    "snap_tolerance_to_standard": 0.15,
+    "cross_day_threshold_hour": 5.0
+  }
+}
