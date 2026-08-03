@@ -91,7 +91,7 @@
 
 ```
 项目文件夹/
-├── run_attendance.exe      # 主程序（免安装，需 Python 无需安装）
+├── run_attendance.exe      # 主程序（免安装，无需安装 Python）
 ├── config.json             # 配置文件（你的 Excel 路径 + 国家选择）
 ├── config_template.json    # 配置模板（复制改名为 config.json 用）
 ├── 使用说明.txt              # 详细使用说明
