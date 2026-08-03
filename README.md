@@ -106,74 +106,56 @@
 
 ---
 
-## 🌍 添加新国家（无需改代码）
+## 🌍 添加新国家（无需改代码，AI 帮你搞定）
 
-1. 在 `rules/` 文件夹中新建一个 JSON 文件（如 `china.json`）
-2. 参考 `rules/example.json` 的格式编写规则
-3. 在 `config.json` 中将 `country` 设为文件名（不含扩展名）
+**你完全不需要看懂代码**，只要把国家规则用大白话告诉 AI 就行。
 
-### 规则文件结构说明
+### 操作步骤
 
-```json
-{
-  "country": {
-    "code": "your_code",
-    "name": "国家名称",
-    "description": "规则描述"
-  },
-  "employee_classes": [
-    {
-      "class_name": "标准员工",
-      "label": "员工分类标签",
-      "names": ["员工姓名列表（可选）"],
-      "standard_hours": {
-        "type": "fixed_daily",
-        "hours_per_day": 8.0
-      },
-      "lunch_deduction_hours": 0.5,
-      "weekly_pool": {
-        "normal_up_to": 40,
-        "toil_from": 40,
-        "toil_up_to": 44,
-        "overtime_100_above": 44,
-        "overtime_rate": 1.0
-      }
-    }
-  ],
-  "paid_leave_types": ["annual_leave", "sick_leave"],
-  "leave_types": {
-    "AL": "年假",
-    "SL": "病假",
-    "OFF": "休息"
-  },
-  "leave_patterns": {},
-  "data_processing": {
-    "name_match_threshold": 0.8,
-    "snap_tolerance_to_standard": 0.15,
-    "cross_day_threshold_hour": 5.0
-  }
-}
+**第 1 步：打开任意 AI 工具**（ChatGPT、DeepSeek、豆包等）
+
+**第 2 步：把下面这段话复制给 AI**（把「XXX国」换成你的国家）：
+
+```
+我有个多国考勤工时工具，规则保存在 rules/ 文件夹的 JSON 文件里。
+请帮我为【XXX国】生成一份规则文件，要求：
+- 标准工时：每天 8 小时，每周 40 小时
+- 超过 40 小时算加班，加班费率 1.5 倍
+- 午休扣除 0.5 小时
+- 年假叫 AL，病假叫 SL，OFF 是休息日
+请参照 rules/belgium.json 的字段格式，生成完整的 JSON 内容
 ```
 
----
+> 💡 更保险的做法：把 `rules/belgium.json` 的内容也一起发给 AI，说「参照这个格式，帮我改成 XXX 国规则」，AI 生成的格式就不会错。
 
-## 📝 修改现有规则
+**第 3 步：把 AI 生成的内容保存为规则文件**
+1. 进入 `rules/` 文件夹，新建一个文本文件
+2. 粘贴 AI 生成的内容
+3. 另存为，文件名写 `china.json`（编码选 **UTF-8**）
 
-直接用记事本打开 `rules/` 下的 JSON 文件即可修改：
-- **工时标准**：修改 `standard_hours` 和 `weekly_pool`
-- **加班费率**：修改 `overtime_rate`（1.0 = 100%）
-- **员工分类**：修改 `employee_classes` 中的 `names` 列表
-- **请假类型**：修改 `leave_types` 中的映射
+**第 4 步：修改配置**
+- 用记事本打开 `config.json`
+- 把 `"country": "belgium"` 改成 `"country": "china"`
 
-## 🤖 用 AI 工具辅助修改规则
-
-把规则 JSON 文件内容发给 AI 工具，告诉它：
-- "帮我改为英国规则，周工时上限 48h"
-- "加班费率改为 1.5 倍"
-- "新增一个员工分类，包含这些员工名字"
-
-AI 会帮你生成修改后的 JSON，粘贴回去即可。
+**第 5 步：双击运行，完成！** 🎉
 
 ---
 
-> 💡 本项目参加 AI 大赛，欢迎 Star ⭐ 和反馈！
+## 📝 修改现有规则（同样交给 AI）
+
+1. 用记事本打开 `rules/` 下的规则文件（如 `belgium.json`），全选复制内容
+2. 发给 AI，用大白话提要求：
+   - 「把每周工时上限改成 44 小时」
+   - 「加班费率改成 1.5 倍」
+   - 「新增一个员工分类，包含张三、李四、王五」
+   - 「把调休的规则去掉」
+3. AI 返回修改后的内容，粘贴回原文件保存
+4. 重新双击运行即可
+
+---
+
+> 🔧 想了解规则文件里每个字段的含义？打开 `rules/example.json`，里面每一行都有中文注释说明。
+
+---
+
+> 💡 本项目参加 本项目参加 AI 大赛，欢迎 Star ⭐ 和反馈！
