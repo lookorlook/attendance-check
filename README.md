@@ -60,11 +60,33 @@ xattr -d com.apple.quarantine 启动考勤工具.command
 **方法 3：直接用 Python 运行（跳过脚本）**
 ```bash
 cd ~/Downloads/attendance-check-master
-python3 run.py --config config.json
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install openpyxl
+python run.py --config config.json
 ```
 > 首次运行若提示缺少 config.json，先执行：`cp config_template.json config.json`，编辑填好路径后再运行。
 
 > 也可以在「系统设置 → 隐私与安全性」最下方点「仍要打开」来放行。
+
+### 🍎 macOS 常见问题：提示安装 openpyxl 失败？
+
+新版 macOS 的 Python 会限制全局安装包（报 `externally-managed-environment` 或权限错误），属正常现象。解决办法：
+
+**用虚拟环境安装（推荐，脚本已内置此流程）**：
+```bash
+cd ~/Downloads/attendance-check-master
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install openpyxl
+python run.py --config config.json
+```
+
+**或直接强制装到用户目录**：
+```bash
+python3 -m pip install openpyxl --user --break-system-packages
+```
+
 
 ---
 

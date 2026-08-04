@@ -1,5 +1,5 @@
 #!/bin/bash
-# 多国考勤工时工具 - macOS 启动脚本
+# 多国考勤工时工具 - macOS 启动脚本（自动虚拟环境版）
 # 若双击提示"无法验证"或"来自身份不明的开发者"，请右键此文件 -> 打开；或在终端运行：
 #   xattr -d com.apple.quarantine 启动考勤工具.command
 #   ./启动考勤工具.command
@@ -29,12 +29,30 @@ if ! command -v python3 &>/dev/null; then
     exit 1
 fi
 
-# 2. 检查并安装 openpyxl
-if ! python3 -c "import openpyxl" 2>/dev/null; then
-    echo ""
-    echo "📦 首次运行，正在安装依赖 openpyxl ..."
-    python3 -m pip install --user openpyxl --quiet || {
-        echo "❌ openpyxl 安装失败，请手动运行: python3 -m pip install openpyxl"
+# 2. 创建虚拟环境（首次）并安装依赖
+if [ ! -d ".venv" ]; then
+    echo "📦 首次运行，正在创建虚拟环境 .venv ..."
+    python3 -m venv .venv || {
+        echo "❌ 创建虚拟环境失败。请手动执行："
+        echo "   python3 -m pip install openpyxl --user --break-system-packages"
+        read -p "按回车键退出..." _
+        exit 1
+    }
+fi
+
+# 使用虚拟环境里的 python
+PY=".venv/bin/python"
+if [ ! -x "$PY" ]; then
+    echo "❌ 虚拟环境异常，请删除 .venv 文件夹后重试"
+    read -p "按回车键退出..." _
+    exit 1
+fi
+
+if ! "$PY" -c "import openpyxl" 2>/dev/null; then
+    echo "📦 正在安装依赖 openpyxl ..."
+    "$PY" -m pip install openpyxl --quiet || {
+        echo "❌ openpyxl 安装失败，请手动执行："
+        echo "   python3 -m pip install openpyxl --user --break-system-packages"
         read -p "按回车键退出..." _
         exit 1
     }
@@ -50,7 +68,7 @@ if [ ! -f "config.json" ]; then
 fi
 
 # 4. 运行
-python3 run.py --config config.json
+"$PY" run.py --config config.json
 
 echo ""
 read -p "运行完成，按回车键退出..." _
