@@ -88,8 +88,37 @@ def main():
         print(f"请确保 {config_path} 存在")
         sys.exit(1)
 
-    with open(config_path, "r", encoding="utf-8") as f:
-        cfg = json.load(f)
+    try:
+        with open(config_path, "r", encoding="utf-8") as f:
+            cfg = json.load(f)
+    except json.JSONDecodeError as e:
+        print(f"错误: config.json 格式有误，程序无法读取")
+        print(f"  出错位置: 第 {e.lineno} 行 第 {e.colno} 列（常见原因：漏逗号、用了中文标点、复制粘贴出错）")
+        print("  解决办法（任选其一）：")
+        print("    1. 删除 config.json 后重新运行，程序会自动生成新的")
+        print("    2. 用记事本打开修正格式后保存")
+        try:
+            import shutil
+            bak_path = config_path + ".bak"
+            shutil.copy(config_path, bak_path)
+            print(f"  已把原文件备份为: {bak_path}")
+        except Exception:
+            pass
+        if getattr(sys, "frozen", False):
+            app_parent = _app_parent_dir()
+            templates = []
+            if getattr(sys, "_MEIPASS", None):
+                templates.append(os.path.join(sys._MEIPASS, "config_template.json"))
+            if app_parent:
+                templates.append(os.path.join(app_parent, "config_template.json"))
+            for tpl in templates:
+                if os.path.exists(tpl):
+                    import shutil
+                    shutil.copy(tpl, config_path)
+                    print(f"  已自动生成新的 config.json: {config_path}")
+                    print("  请重新运行程序（data1/data2 留空会自动到「下载」文件夹找 Excel）")
+                    sys.exit(0)
+        sys.exit(1)
 
     year = cfg.get("year", "?")
     month = cfg.get("month", "?")
