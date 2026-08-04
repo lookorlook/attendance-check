@@ -98,12 +98,14 @@ def main():
         from build_html import build_html
         output_dir = cfg.get("file_paths", {}).get("output_dir", "output")
         if not os.path.isabs(output_dir):
-            cfg_dir = os.path.dirname(os.path.abspath(args.config))
+            cfg_dir = os.path.dirname(os.path.abspath(config_path))
             output_dir = os.path.join(cfg_dir, output_dir)
         json_data_path = os.path.join(output_dir, "attendance_data.json")
         if os.path.exists(json_data_path):
             build_html([(json_data_path, f"{year}年{month}月")])
-        print(f"  HTML生成完成")
+            print(f"  HTML生成完成")
+        else:
+            print(f"  ⚠️ 未找到处理数据: {json_data_path}")
     except Exception as e:
         print(f"错误: HTML生成失败 - {e}")
         import traceback
@@ -113,7 +115,7 @@ def main():
     # 找到HTML文件
     output_dir = cfg.get("file_paths", {}).get("output_dir", "output")
     if not os.path.isabs(output_dir):
-        cfg_dir = os.path.dirname(os.path.abspath(args.config))
+        cfg_dir = os.path.dirname(os.path.abspath(config_path))
         output_dir = os.path.join(cfg_dir, output_dir)
 
     html_path = os.path.join(output_dir, "attendance_calendar.html")
