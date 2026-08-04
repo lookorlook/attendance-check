@@ -41,6 +41,26 @@ def _locate_config(arg_config):
             return c
     return candidates[0]
 
+def _open_browser(path):
+    """跨平台打开浏览器：macOS 用 open 命令，Windows 用系统默认方式，其他系统退回 webbrowser"""
+    if not os.path.exists(path):
+        return False
+    try:
+        if sys.platform == "darwin":
+            import subprocess
+            subprocess.Popen(["open", path])
+            return True
+        if os.name == "nt":
+            os.startfile(path)
+            return True
+    except Exception:
+        pass
+    try:
+        import webbrowser
+        return webbrowser.open(path)
+    except Exception:
+        return False
+
 def main():
     parser = argparse.ArgumentParser(description="多国考勤整合 - 一键执行")
     parser.add_argument("--config", default="config.json", help="配置文件路径")
@@ -125,8 +145,12 @@ def main():
 
     if os.path.exists(html_path) and not args.no_browser:
         try:
-            webbrowser.open(html_path)
-            print("  已自动打开浏览器")
+            ok = _open_browser(html_path)
+            if ok:
+                print("  已自动打开浏览器")
+            else:
+                print("  无法自动打开浏览器，请手动打开:")
+                print(f"  {html_path}")
         except Exception as e:
             print(f"  无法自动打开浏览器: {e}")
             print(f"  请手动打开: {html_path}")
