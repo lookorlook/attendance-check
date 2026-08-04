@@ -1,6 +1,6 @@
 {
   "_说明": "多国考勤整合 - 通用配置模板",
-  "_使用": "复制此文件为 config_YYYYMM.json，修改 year/month/country/file_paths 后运行",
+  "_使用": "把本文件改名为 config.json。data1/data2 留空时，程序会自动到「下载」文件夹找最新的两个 Excel；也可以填完整路径（以 .xlsx 结尾）",
   "_country": "可选值: belgium, france, 或创建自己的 rules/{code}.json",
 
   "country": "belgium",
@@ -8,9 +8,9 @@
   "month": 7,
 
   "file_paths": {
-    "data1": "在此填写系统打卡Excel的绝对路径",
-    "data2": "在此填写PLANNING排班Excel的绝对路径",
-    "mapping": "工号映射Excel的绝对路径（可选，无则留空）",
+    "data1": "",
+    "data2": "",
+    "mapping": "",
     "output_dir": "output"
   },
 
