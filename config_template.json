@@ -1,6 +1,6 @@
 {
   "_说明": "多国考勤整合 - 通用配置模板",
-  "_使用": "把本文件改名为 config.json。data1/data2 留空时，程序会自动到「下载」文件夹找最新的两个 Excel；也可以填完整路径（以 .xlsx 结尾）",
+  "_使用": "把本文件改名为 config.json。data1/data2 留空时，程序会自动到「下载」文件夹找最新的两个 Excel；也可以填完整路径（以 .xlsx 结尾，不要加引号）",
   "_country": "可选值: belgium, france, 或创建自己的 rules/{code}.json",
 
   "country": "belgium",
