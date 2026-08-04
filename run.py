@@ -29,12 +29,13 @@ def _app_parent_dir():
     return d1
 
 def _locate_config(arg_config):
-    """定位配置文件：优先当前目录，其次可执行文件同级目录（打包后）"""
-    candidates = [arg_config]
+    """定位配置文件：打包后优先程序旁边的 config.json，其次当前目录（防止误读主目录里的旧配置）"""
+    candidates = []
     if getattr(sys, "frozen", False):
         app_parent = _app_parent_dir()
         if app_parent:
             candidates.append(os.path.join(app_parent, os.path.basename(arg_config)))
+    candidates.append(arg_config)
     for c in candidates:
         if os.path.exists(c):
             return c
@@ -75,7 +76,7 @@ def main():
 
     print("=" * 60)
     print(f"  {year}年{month}月 考勤整合")
-    print(f"  国家: {country} | 配置: {os.path.abspath(args.config)}")
+    print(f"  国家: {country} | 配置: {os.path.abspath(config_path)}")
     print("=" * 60)
 
     # 直接导入模块函数，不用 subprocess
@@ -84,7 +85,7 @@ def main():
     print("\n[1/3] 处理考勤数据...")
     try:
         from process_attendance import process_attendance
-        json_path = process_attendance(args.config)
+        json_path = process_attendance(config_path)
         print(f"  数据处理完成: {json_path}")
     except Exception as e:
         print(f"错误: 数据处理失败 - {e}")
