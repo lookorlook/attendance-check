@@ -11,7 +11,7 @@ import sys
 import webbrowser
 
 sys.stdout.reconfigure(encoding="utf-8")
-VERSION = "1.2.3"
+VERSION = "1.2.5"
 
 
 
@@ -93,10 +93,11 @@ def main():
             cfg = json.load(f)
     except json.JSONDecodeError as e:
         print(f"错误: config.json 格式有误，程序无法读取")
-        print(f"  出错位置: 第 {e.lineno} 行 第 {e.colno} 列（常见原因：漏逗号、用了中文标点、复制粘贴出错）")
-        print("  解决办法（任选其一）：")
-        print("    1. 删除 config.json 后重新运行，程序会自动生成新的")
-        print("    2. 用记事本打开修正格式后保存")
+        print(f"  出错位置: 第 {e.lineno} 行 第 {e.colno} 列")
+        print("  常见原因：漏了逗号、用了中文标点、填写路径时把两边的引号也打了进去")
+        print("  正确写法示例：")
+        print('    "data1": "D:/我的文件/打卡.xlsx"')
+        print("  （值两边的引号由系统自动加，填路径时不要再打引号）")
         try:
             import shutil
             bak_path = config_path + ".bak"
@@ -104,6 +105,7 @@ def main():
             print(f"  已把原文件备份为: {bak_path}")
         except Exception:
             pass
+        regenerated = False
         if getattr(sys, "frozen", False):
             app_parent = _app_parent_dir()
             templates = []
@@ -116,9 +118,14 @@ def main():
                     import shutil
                     shutil.copy(tpl, config_path)
                     print(f"  已自动生成新的 config.json: {config_path}")
-                    print("  请重新运行程序（data1/data2 留空会自动到「下载」文件夹找 Excel）")
-                    sys.exit(0)
-        sys.exit(1)
+                    regenerated = True
+                    break
+        if not regenerated:
+            print("  请删除 config.json 后重新运行，程序会自动生成新的")
+            sys.exit(1)
+        print("  ✅ 已自动修复，继续运行（data1/data2 留空会自动到「下载」文件夹找 Excel）")
+        with open(config_path, "r", encoding="utf-8") as f:
+            cfg = json.load(f)
 
     year = cfg.get("year", "?")
     month = cfg.get("month", "?")
