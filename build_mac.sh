@@ -45,7 +45,12 @@ pyinstaller --noconfirm --clean \
 # 4. 组装发布文件夹（双击即用）
 echo "📁 组装发布文件夹 ..."
 mkdir -p "考勤工时工具_Mac版"
-cp -r "dist/考勤工时工具.app" "考勤工时工具_Mac版/"
+if [ -d "dist/考勤工时工具.app" ]; then
+    cp -r "dist/考勤工时工具.app" "考勤工时工具_Mac版/"
+else
+    cp "dist/考勤工时工具" "考勤工时工具_Mac版/考勤工时工具"
+    chmod +x "考勤工时工具_Mac版/考勤工时工具"
+fi
 cp config_template.json "考勤工时工具_Mac版/"
 cp -r rules "考勤工时工具_Mac版/"
 cat > "考勤工时工具_Mac版/使用说明.txt" <<'EOF'
