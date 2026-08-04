@@ -26,6 +26,8 @@ GitHub 云端已自动打包**免 Python 的 .app**，体验与 Windows exe 完�
 3. 首次运行自动生成 `config.json` → 用文本编辑填写两个 Excel 路径
 4. 再次双击 .app → 自动打开浏览器出报表 ✅
 
+> 💡 **v1.2.0 新功能**：`config.json` 里的 `data1` / `data2` **留空也可以**，程序会自动去「下载」文件夹找最新的两个 Excel；想指定文件再手动填路径（需以 `.xlsx` 结尾）
+
 > ✅ .app 已内置 Python 运行环境，**用户电脑上无需安装任何软件**
 > 🔧 想从源码自己打包？下载 ZIP → 终端运行 `./build_mac.sh`（仅打包者需要 Python）
 
@@ -116,6 +118,7 @@ python3 -m pip install openpyxl --user --break-system-packages
 2. **修改配置**
    - 用记事本/文本编辑打开 `config.json`
    - 将 `data1` 改为打卡文件路径、`data2` 改为排班表路径（斜杠用 /）
+    - 💡 **也可以留空**：程序会自动去「下载」文件夹找最新的两个 Excel，无需手填路径
    - 设置 `country`：`belgium` / `france` / 自定义
 
 3. **运行**
