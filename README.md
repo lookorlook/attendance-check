@@ -41,6 +41,31 @@
 
 > 已装有 Python3 的用户，也可直接在终端运行：`python3 run.py --config config.json`
 
+### 🍎 macOS 常见问题：双击提示「无法验证」怎么办？
+
+从网上下载的文件会被 macOS 打上「隔离标记」，首次运行可能提示「无法验证开发者」或「无法打开」。三种解决办法：
+
+**方法 1（最简单）：右键 → 打开**
+- 在「访达」中**右键**点 `启动考勤工具.command` → 选 **打开** → 弹窗里再点 **打开**
+
+**方法 2：解除隔离标记（一劳永逸）**
+- 打开「终端」（启动台 → 其他 → 终端），输入（把路径换成你解压的文件夹）：
+```bash
+cd ~/Downloads/attendance-check-master
+xattr -d com.apple.quarantine 启动考勤工具.command
+./启动考勤工具.command
+```
+- 脚本内置了自动解除功能：**首次成功运行后，标记会自动移除**，下次直接双击即可
+
+**方法 3：直接用 Python 运行（跳过脚本）**
+```bash
+cd ~/Downloads/attendance-check-master
+python3 run.py --config config.json
+```
+> 首次运行若提示缺少 config.json，先执行：`cp config_template.json config.json`，编辑填好路径后再运行。
+
+> 也可以在「系统设置 → 隐私与安全性」最下方点「仍要打开」来放行。
+
 ---
 
 ## 🚀 快速使用（Windows / macOS 通用 4 步）

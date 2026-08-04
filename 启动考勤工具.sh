@@ -1,8 +1,18 @@
 #!/bin/bash
 # 多国考勤工时工具 - macOS 启动脚本
-# 双击此文件即可运行（首次需右键->打开，允许运行）
+# 若双击提示"无法验证"或"来自身份不明的开发者"，请右键此文件 -> 打开；或在终端运行：
+#   xattr -d com.apple.quarantine 启动考勤工具.command
+#   ./启动考勤工具.command
 
 cd "$(dirname "$0")" || exit 1
+
+# 0. 自动解除 macOS 隔离标记（首次运行）
+if xattr -p com.apple.quarantine "$0" >/dev/null 2>&1; then
+    echo "🔓 检测到 macOS 隔离标记，正在解除..."
+    xattr -d com.apple.quarantine "$0" 2>/dev/null
+    echo "   已解除！请再次双击本文件运行（或直接回车继续）"
+    echo ""
+fi
 
 echo "==================================="
 echo "  多国考勤工时工具 (macOS)"
