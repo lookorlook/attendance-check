@@ -35,9 +35,11 @@
    - 脚本会自动检查 Python3、自动安装 openpyxl、自动生成 config.json
 3. 编辑 `config.json` 填写两个 Excel 路径 → 再次双击运行
 
-**方式 B：在 Mac 上打包成独立 .app（免 Python）**
-1. 解压后打开终端，进入文件夹执行：`./build_mac.sh`
-2. 打包完成后在 `dist/` 目录生成「考勤工时工具.app」，可拷贝给同事直接使用
+**方式 B：打包成「双击即用」的 Mac 版（和 Windows exe 一样免 Python）**
+1. 解压后在终端执行一次：`./build_mac.sh`（需要本机装有 Python3）
+2. 打包完成后生成「考勤工时工具_Mac版」文件夹，里面有 `考勤工时工具.app`
+3. **把这个文件夹整个拷贝给同事**，Mac 用户双击 .app 即可使用，无需安装 Python
+   - 首次打开若提示「无法验证」，右键点 .app → 打开 → 再点打开（一次性放行）
 
 > 已装有 Python3 的用户，也可直接在终端运行：`python3 run.py --config config.json`
 

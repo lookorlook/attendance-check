@@ -27,21 +27,39 @@ sys.stdout.reconfigure(encoding="utf-8")
 # 国别规则加载
 # ============================================================
 
+def _app_parent_dir():
+    """打包成 .app 后，返回 .app 所在的文件夹（配置/规则放在 .app 旁边）"""
+    if getattr(sys, "frozen", False):
+        return os.path.dirname(os.path.dirname(os.path.dirname(sys.executable)))
+    return None
+
+
+def _rules_candidates():
+    """按优先级返回可能的 rules 目录列表"""
+    cands = []
+    parent = _app_parent_dir()
+    if parent:
+        cands.append(os.path.join(parent, "rules"))          # 1. .app 旁边（用户可编辑）
+    if getattr(sys, "_MEIPASS", None):
+        cands.append(os.path.join(sys._MEIPASS, "rules"))    # 2. 打包内置
+    cands.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "rules"))  # 3. 源码目录
+    return cands
+
+
 def load_country_rules(country_code):
     """从 rules/ 目录加载国别规则JSON"""
-    rules_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rules")
-    path = os.path.join(rules_dir, f"{country_code}.json")
-    if not os.path.exists(path):
-        if os.path.exists(country_code):
-            path = country_code
-        else:
-            raise FileNotFoundError(
-                f"找不到国家规则文件: {path}\n"
-                f"请确保 rules/{country_code}.json 存在，"
-                f"或参考 rules/example.json 创建")
-    with open(path, "r", encoding="utf-8") as f:
-        rules = json.load(f)
-    return rules
+    for rules_dir in _rules_candidates():
+        path = os.path.join(rules_dir, f"{country_code}.json")
+        if os.path.exists(path):
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
+    if os.path.exists(country_code):
+        with open(country_code, "r", encoding="utf-8") as f:
+            return json.load(f)
+    raise FileNotFoundError(
+        f"找不到国家规则文件: rules/{country_code}.json\n"
+        f"请确保 rules/{country_code}.json 存在，"
+        f"或参考 rules/example.json 创建")
 
 
 def load_config(config_path):

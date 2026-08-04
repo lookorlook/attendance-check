@@ -13,18 +13,44 @@ import webbrowser
 sys.stdout.reconfigure(encoding="utf-8")
 
 
+def _locate_config(arg_config):
+    """定位配置文件：优先当前目录，其次 .app 同级目录（打包后）"""
+    candidates = [arg_config]
+    if getattr(sys, "frozen", False):
+        app_parent = os.path.dirname(os.path.dirname(os.path.dirname(sys.executable)))
+        candidates.append(os.path.join(app_parent, os.path.basename(arg_config)))
+    for c in candidates:
+        if os.path.exists(c):
+            return c
+    return candidates[0]
+
 def main():
     parser = argparse.ArgumentParser(description="多国考勤整合 - 一键执行")
     parser.add_argument("--config", default="config.json", help="配置文件路径")
     parser.add_argument("--no-browser", action="store_true", help="不自动打开浏览器")
     args = parser.parse_args()
 
-    if not os.path.exists(args.config):
-        print(f"错误: 找不到配置文件 {args.config}")
-        print(f"请确保 {args.config} 存在")
+    config_path = _locate_config(args.config)
+    if not os.path.exists(config_path):
+        # 打包成 .app 后，若 config.json 不存在则自动从模板生成
+        if getattr(sys, "frozen", False):
+            app_parent = os.path.dirname(os.path.dirname(os.path.dirname(sys.executable)))
+            templates = []
+            if getattr(sys, "_MEIPASS", None):
+                templates.append(os.path.join(sys._MEIPASS, "config_template.json"))
+            templates.append(os.path.join(app_parent, "config_template.json"))
+            for tpl in templates:
+                if os.path.exists(tpl):
+                    import shutil
+                    shutil.copy(tpl, config_path)
+                    print(f"📝 已自动生成配置文件: {config_path}")
+                    print("  请用文本编辑打开 config.json，填写 data1 / data2 路径后重新运行")
+                    sys.exit(0)
+        print(f"错误: 找不到配置文件 {config_path}")
+        print(f"请确保 {config_path} 存在")
         sys.exit(1)
 
-    with open(args.config, "r", encoding="utf-8") as f:
+    with open(config_path, "r", encoding="utf-8") as f:
         cfg = json.load(f)
 
     year = cfg.get("year", "?")
