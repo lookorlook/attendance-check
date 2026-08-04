@@ -94,6 +94,73 @@ def resolve_path(path, script_dir):
 
 
 # ============================================================
+# Excel 路径自动识别（防止填错路径/漏写 .xlsx 后缀）
+# ============================================================
+
+SUPPORTED_EXTS = (".xlsx", ".xlsm", ".xltx", ".xltm")
+
+
+def _excel_candidate_dirs(cfg_dir):
+    """搜索 Excel 的候选目录：配置文件目录 -> 程序目录 -> 主目录 -> 下载目录"""
+    dirs = []
+    for d in (cfg_dir, _app_parent_dir(), os.path.expanduser("~"),
+              os.path.join(os.path.expanduser("~"), "Downloads")):
+        if d and d not in dirs:
+            dirs.append(d)
+    return dirs
+
+
+def _collect_excel_files(cfg_dir):
+    """收集候选目录下的 Excel 文件，按修改时间从新到旧排序"""
+    found = []
+    for d in _excel_candidate_dirs(cfg_dir):
+        try:
+            for name in os.listdir(d):
+                if name.startswith("~$") or name.startswith("."):
+                    continue
+                if os.path.splitext(name)[1].lower() in SUPPORTED_EXTS:
+                    p = os.path.join(d, name)
+                    if os.path.isfile(p):
+                        found.append((os.path.getmtime(p), os.path.abspath(p)))
+        except OSError:
+            continue
+    found.sort(key=lambda t: t[0], reverse=True)
+    return [p for _, p in found]
+
+
+def _resolve_data_path(hint, cfg_dir, used):
+    """解析 data1/data2 路径；配置无效时自动在常见位置查找 Excel"""
+    raw = str(hint or "").strip()
+    path = resolve_path(raw, cfg_dir) if raw else ""
+    if path and os.path.exists(path) and os.path.splitext(path)[1].lower() in SUPPORTED_EXTS:
+        used.add(os.path.abspath(path))
+        return os.path.abspath(path), False
+    # 配置无效：优先按文件名相似度匹配，其次按修改时间取最新的
+    hint_stem = os.path.splitext(os.path.basename(path))[0].lower() if path else ""
+    candidates = _collect_excel_files(cfg_dir)
+    if hint_stem:
+        matched = [c for c in candidates if hint_stem in os.path.basename(c).lower()]
+        if matched:
+            candidates = matched
+    for cand in sorted(candidates, key=lambda c: os.path.getmtime(c), reverse=True):
+        if os.path.abspath(cand) not in used:
+            used.add(os.path.abspath(cand))
+            return os.path.abspath(cand), True
+    return os.path.abspath(path) if path else "", False
+
+
+def _check_excel_path(path, label):
+    """校验 Excel 路径，返回错误信息（无错误返回 None）"""
+    if not path:
+        return f"{label}路径为空：请在 config.json 的 data1 / data2 填写Excel文件的完整路径（以 .xlsx 结尾）"
+    if not os.path.exists(path):
+        return f"{label}文件不存在：{path}\n请确认文件名和路径是否正确（注意大小写和 .xlsx 后缀）"
+    if os.path.splitext(path)[1].lower() not in SUPPORTED_EXTS:
+        return f"{label}不是Excel文件：{path}\n支持的格式：.xlsx / .xlsm / .xltx / .xltm"
+    return None
+
+
+# ============================================================
 # EmployeeClass — 动态员工类别
 # ============================================================
 
@@ -337,13 +404,21 @@ def process_attendance(config_path):
     cfg_dir = os.path.dirname(os.path.abspath(config_path))
 
     paths = cfg["file_paths"]
-    data1_path = resolve_path(paths["data1"], cfg_dir)
-    data2_path = resolve_path(paths["data2"], cfg_dir)
+    used = set()
+    data1_path, data1_auto = _resolve_data_path(paths.get("data1", ""), cfg_dir, used)
+    data2_path, data2_auto = _resolve_data_path(paths.get("data2", ""), cfg_dir, used)
     mapping_path = resolve_path(paths.get("mapping", ""), cfg_dir) if paths.get("mapping") else None
     output_dir = resolve_path(paths.get("output_dir", "output"), cfg_dir)
     prev_month_path = resolve_path(cfg.get("prev_month_json", ""), cfg_dir) if cfg.get("prev_month_json") else None
     print(f"  跨月数据: {prev_month_path if prev_month_path else '(无)'}")
     os.makedirs(output_dir, exist_ok=True)
+
+    for label, p, auto in (("打卡文件(data1)", data1_path, data1_auto),
+                           ("排班文件(data2)", data2_path, data2_auto)):
+        print(f"  {label}: {p}{'（自动找到）' if auto else ''}")
+        err = _check_excel_path(p, label)
+        if err:
+            raise ValueError(err)
 
     # 构建员工类别
     employee_classes = build_employee_classes(rules)
