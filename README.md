@@ -20,7 +20,7 @@
 
 GitHub 云端已自动打包**免 Python 的 .app**，体验与 Windows exe 完全一致：
 
-1. 打开 [Releases 页面](https://github.com/lookorlook/attendance-check/releases) → 下载 `考勤工时工具_Mac版.zip`
+1. 打开 [Releases 页面](https://github.com/lookorlook/attendance-check/releases) → 下载 `attendance-tool-Mac.zip`
 2. 解压 → 双击 `考勤工时工具.app`
    - 首次提示「无法验证」→ **右键点它 → 打开 → 再点打开**（一次性放行）
 3. 首次运行自动生成 `config.json` → 用文本编辑填写两个 Excel 路径
