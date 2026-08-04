@@ -1,12 +1,15 @@
 # 🏢 多国考勤工时工具 / Attendance Check Tool
 
 > 跨国 HR 导入「打卡表 + 排班表」两套 Excel，即可自动合并、按国别规则合规计算，一键生成带颜色标识的月度工时日历报表。
+> 支持 **Windows / macOS** 双平台。
 
 ---
 
-## ⚠️ 重要：exe 不能单独使用！
+## 📥 下载与运行（按你的系统选择）
 
-**run_attendance.exe 只是一个主程序，它必须和以下配套文件放在同一个文件夹里才能运行：**
+### 🪟 Windows 用户
+
+**exe 不能单独使用！** 它必须和配套文件放在同一个文件夹：
 
 ```
 你的文件夹/
@@ -18,44 +21,46 @@
     └── example.json
 ```
 
-> ❌ 只下载 exe 一个文件 → 双击会报错「找不到配置文件 config.json」
-> ✅ 请下载**整个项目压缩包**，或把配套文件一起放到 exe 旁边
+**推荐做法**：打开仓库主页 → 绿色按钮 **Code** → **Download ZIP**，解压后整个文件夹一起用。
+> 只下 exe 一个文件 → 双击会报「找不到配置文件 config.json」
+
+### 🍎 macOS 用户
+
+本仓库已内置 **Python 跨平台源码 + 双击启动脚本**，无需安装任何额外软件（只需系统自带 Python3）：
+
+**方式 A（推荐）：下载 ZIP 后用启动脚本**
+1. 仓库主页 → **Code** → **Download ZIP**，解压
+2. 找到 **`启动考勤工具.command`**，双击运行
+   - 首次双击若提示「无法打开」，右键点它 → **打开** → 再点 **打开** 即可（安全提示可忽略）
+   - 脚本会自动检查 Python3、自动安装 openpyxl、自动生成 config.json
+3. 编辑 `config.json` 填写两个 Excel 路径 → 再次双击运行
+
+**方式 B：在 Mac 上打包成独立 .app（免 Python）**
+1. 解压后打开终端，进入文件夹执行：`./build_mac.sh`
+2. 打包完成后在 `dist/` 目录生成「考勤工时工具.app」，可拷贝给同事直接使用
+
+> 已装有 Python3 的用户，也可直接在终端运行：`python3 run.py --config config.json`
 
 ---
 
-## 📥 下载方式（二选一，推荐第一种）
-
-### 方式一：下载整个项目 ZIP（推荐 ✅）
-
-1. 打开仓库主页 → 点击绿色按钮 **Code** → **Download ZIP**
-2. 解压后，把**整个文件夹**放到你的电脑上
-3. 文件夹里已经包含 exe + config + rules，可以直接用
-
-### 方式二：只下载 Releases 里的 exe
-
-1. 前往 [Releases 页面](https://github.com/lookorlook/attendance-check/releases) 下载 exe
-2. **同时**下载本仓库里的 `config.json` 和 `rules/` 文件夹
-3. 把三者放进**同一个文件夹**
-
----
-
-## 🚀 快速使用（4 步）
+## 🚀 快速使用（Windows / macOS 通用 4 步）
 
 1. **准备两个 Excel 文件**
    - 打卡记录.xlsx：考勤机系统导出的打卡数据
    - 排班表.xlsx：HR 做的排班登记表
 
 2. **修改配置**
-   - 用记事本打开 `config.json`
+   - 用记事本/文本编辑打开 `config.json`
    - 将 `data1` 改为打卡文件路径、`data2` 改为排班表路径（斜杠用 /）
    - 设置 `country`：`belgium` / `france` / 自定义
 
 3. **运行**
-   - 双击 `双击我运行.bat`（或双击 `run_attendance.exe`）
-   - 若 Windows 弹出「已保护你的电脑」→ 点 **更多信息 → 仍要运行**（程序未签名，属正常提示）
+   - Windows：双击 `双击我运行.bat` 或 `run_attendance.exe`
+   - macOS：双击 `启动考勤工具.command`
+   - 若 Windows 弹出「已保护你的电脑」→ 点 **更多信息 → 仍要运行**
 
 4. **查看结果**
-   - 运行后自动打开浏览器，显示 `output/attendance_calendar.html` 彩色日历报表
+   - 自动打开浏览器，显示 `output/attendance_calendar.html` 彩色日历报表
 
 ---
 
@@ -91,11 +96,18 @@
 
 ```
 项目文件夹/
-├── run_attendance.exe      # 主程序（免安装，无需安装 Python）
+├── run_attendance.exe      # Windows 免安装版主程序（Windows 专用）
+├── run.py                  # Python 源码入口（跨平台：Windows/macOS/Linux）
+├── process_attendance.py   # 考勤数据处理引擎
+├── build_html.py           # HTML 报表生成
+├── requirements.txt        # Python 依赖（仅 openpyxl）
 ├── config.json             # 配置文件（你的 Excel 路径 + 国家选择）
-├── config_template.json    # 配置模板（复制改名为 config.json 用）
+├── config_template.json    # 配置模板
 ├── 使用说明.txt              # 详细使用说明
-├── 双击我运行.bat           # 一键启动脚本
+├── 双击我运行.bat           # Windows 一键启动
+├── 启动考勤工具.command      # macOS 双击启动
+├── 启动考勤工具.sh           # macOS/Linux 终端启动
+├── build_mac.sh            # macOS 打包脚本（生成独立 .app）
 ├── rules/                  # 国别规则文件夹
 │   ├── belgium.json        # 比利时规则
 │   ├── france.json         # 法国规则
@@ -158,4 +170,4 @@
 
 ---
 
-> 💡 本项目参加 本项目参加 AI 大赛，欢迎 Star ⭐ 和反馈！
+> 💡 本项目参加 AI 大赛，欢迎 Star ⭐ 和反馈！
