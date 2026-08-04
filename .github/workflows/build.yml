@@ -1,0 +1,78 @@
+name: Build Releases (Mac + Windows)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-macos:
+    name: Build macOS .app
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller openpyxl
+
+      - name: Build .app
+        run: |
+          pyinstaller --noconfirm --clean --name "考勤工时工具" --onefile \
+            --add-data "rules:rules" \
+            --add-data "config_template.json:." \
+            run.py
+
+      - name: Assemble Mac package folder
+        run: |
+          mkdir -p "考勤工时工具_Mac版"
+          cp -r "dist/考勤工时工具.app" "考勤工时工具_Mac版/"
+          cp config_template.json "考勤工时工具_Mac版/"
+          cp -r rules "考勤工时工具_Mac版/"
+          cd "考勤工时工具_Mac版" && zip -r "../考勤工时工具_Mac版.zip" . -x "*.DS_Store"
+
+      - name: Upload to Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: 考勤工时工具_Mac版.zip
+
+  build-windows:
+    name: Build Windows exe
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pyinstaller openpyxl
+
+      - name: Build exe
+        shell: pwsh
+        run: |
+          pyinstaller --noconfirm --clean --name "run_attendance" --onefile `
+            --add-data "rules;rules" `
+            --add-data "config_template.json;." `
+            run.py
+
+      - name: Upload to Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/run_attendance.exe
