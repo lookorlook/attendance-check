@@ -13,12 +13,28 @@ import webbrowser
 sys.stdout.reconfigure(encoding="utf-8")
 
 
+
+
+def _app_parent_dir():
+    """定位可执行文件同级目录：
+    - macOS .app: <文件夹>/考勤工时工具.app/Contents/MacOS/xxx -> <文件夹>
+    - Windows exe / 普通程序: exe 所在文件夹
+    """
+    if not getattr(sys, "frozen", False):
+        return None
+    d1 = os.path.dirname(sys.executable)
+    parent = os.path.dirname(d1)
+    if os.path.basename(d1) == "MacOS" and os.path.basename(parent).endswith(".app"):
+        return os.path.dirname(parent)
+    return d1
+
 def _locate_config(arg_config):
-    """定位配置文件：优先当前目录，其次 .app 同级目录（打包后）"""
+    """定位配置文件：优先当前目录，其次可执行文件同级目录（打包后）"""
     candidates = [arg_config]
     if getattr(sys, "frozen", False):
-        app_parent = os.path.dirname(os.path.dirname(os.path.dirname(sys.executable)))
-        candidates.append(os.path.join(app_parent, os.path.basename(arg_config)))
+        app_parent = _app_parent_dir()
+        if app_parent:
+            candidates.append(os.path.join(app_parent, os.path.basename(arg_config)))
     for c in candidates:
         if os.path.exists(c):
             return c
@@ -32,9 +48,9 @@ def main():
 
     config_path = _locate_config(args.config)
     if not os.path.exists(config_path):
-        # 打包成 .app 后，若 config.json 不存在则自动从模板生成
+        # 打包后若 config.json 不存在则自动从模板生成
         if getattr(sys, "frozen", False):
-            app_parent = os.path.dirname(os.path.dirname(os.path.dirname(sys.executable)))
+            app_parent = _app_parent_dir()
             templates = []
             if getattr(sys, "_MEIPASS", None):
                 templates.append(os.path.join(sys._MEIPASS, "config_template.json"))

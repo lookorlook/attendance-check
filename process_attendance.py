@@ -28,10 +28,17 @@ sys.stdout.reconfigure(encoding="utf-8")
 # ============================================================
 
 def _app_parent_dir():
-    """打包成 .app 后，返回 .app 所在的文件夹（配置/规则放在 .app 旁边）"""
-    if getattr(sys, "frozen", False):
-        return os.path.dirname(os.path.dirname(os.path.dirname(sys.executable)))
-    return None
+    """定位可执行文件同级目录：
+    - macOS .app: <文件夹>/考勤工时工具.app/Contents/MacOS/xxx -> <文件夹>
+    - Windows exe / 普通程序: exe 所在文件夹
+    """
+    if not getattr(sys, "frozen", False):
+        return None
+    d1 = os.path.dirname(sys.executable)
+    parent = os.path.dirname(d1)
+    if os.path.basename(d1) == "MacOS" and os.path.basename(parent).endswith(".app"):
+        return os.path.dirname(parent)
+    return d1
 
 
 def _rules_candidates():

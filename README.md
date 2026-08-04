@@ -9,39 +9,25 @@
 
 ### 🪟 Windows 用户
 
-**exe 不能单独使用！** 它必须和配套文件放在同一个文件夹：
+1. 打开 [Releases 页面](https://github.com/lookorlook/attendance-check/releases) → 下载 `run_attendance.exe`
+2. 同时下载整个项目 ZIP（主页 **Code → Download ZIP**）并解压
+3. 把 exe 放进解压后的文件夹（exe 与 `rules/` 放在一起，`config.json` 首次运行会自动生成）
+4. 编辑 `config.json` 填写两个 Excel 路径 → 双击 `双击我运行.bat`
 
-```
-你的文件夹/
-├── run_attendance.exe    ← 主程序
-├── config.json           ← 配置文件（必填，记录你的 Excel 路径）
-└── rules/                ← 国别规则文件夹（必填）
-    ├── belgium.json
-    ├── france.json
-    └── example.json
-```
+> 新版 exe 已内置规则，可独立运行；想修改规则需配套 `rules/` 文件夹。
 
-**推荐做法**：打开仓库主页 → 绿色按钮 **Code** → **Download ZIP**，解压后整个文件夹一起用。
-> 只下 exe 一个文件 → 双击会报「找不到配置文件 config.json」
+### 🍎 macOS 用户（无需安装 Python！）
 
-### 🍎 macOS 用户
+GitHub 云端已自动打包**免 Python 的 .app**，体验与 Windows exe 完全一致：
 
-本仓库已内置 **Python 跨平台源码 + 双击启动脚本**，无需安装任何额外软件（只需系统自带 Python3）：
+1. 打开 [Releases 页面](https://github.com/lookorlook/attendance-check/releases) → 下载 `考勤工时工具_Mac版.zip`
+2. 解压 → 双击 `考勤工时工具.app`
+   - 首次提示「无法验证」→ **右键点它 → 打开 → 再点打开**（一次性放行）
+3. 首次运行自动生成 `config.json` → 用文本编辑填写两个 Excel 路径
+4. 再次双击 .app → 自动打开浏览器出报表 ✅
 
-**方式 A（推荐）：下载 ZIP 后用启动脚本**
-1. 仓库主页 → **Code** → **Download ZIP**，解压
-2. 找到 **`启动考勤工具.command`**，双击运行
-   - 首次双击若提示「无法打开」，右键点它 → **打开** → 再点 **打开** 即可（安全提示可忽略）
-   - 脚本会自动检查 Python3、自动安装 openpyxl、自动生成 config.json
-3. 编辑 `config.json` 填写两个 Excel 路径 → 再次双击运行
-
-**方式 B：打包成「双击即用」的 Mac 版（和 Windows exe 一样免 Python）**
-1. 解压后在终端执行一次：`./build_mac.sh`（需要本机装有 Python3）
-2. 打包完成后生成「考勤工时工具_Mac版」文件夹，里面有 `考勤工时工具.app`
-3. **把这个文件夹整个拷贝给同事**，Mac 用户双击 .app 即可使用，无需安装 Python
-   - 首次打开若提示「无法验证」，右键点 .app → 打开 → 再点打开（一次性放行）
-
-> 已装有 Python3 的用户，也可直接在终端运行：`python3 run.py --config config.json`
+> ✅ .app 已内置 Python 运行环境，**用户电脑上无需安装任何软件**
+> 🔧 想从源码自己打包？下载 ZIP → 终端运行 `./build_mac.sh`（仅打包者需要 Python）
 
 ### 🍎 macOS 常见问题：双击提示「无法验证」怎么办？
 
