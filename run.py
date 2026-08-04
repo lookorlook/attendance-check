@@ -11,6 +11,7 @@ import sys
 import webbrowser
 
 sys.stdout.reconfigure(encoding="utf-8")
+VERSION = "1.2.3"
 
 
 
@@ -48,7 +49,7 @@ def _open_browser(path):
     try:
         if sys.platform == "darwin":
             import subprocess
-            subprocess.Popen(["open", path])
+            subprocess.call(["open", path])
             return True
         if os.name == "nt":
             os.startfile(path)
@@ -57,7 +58,7 @@ def _open_browser(path):
         pass
     try:
         import webbrowser
-        return webbrowser.open(path)
+        return webbrowser.open("file://" + os.path.abspath(path))
     except Exception:
         return False
 
@@ -95,6 +96,7 @@ def main():
     country = cfg.get("country", "?")
 
     print("=" * 60)
+    print(f"  多国考勤工时工具 v{VERSION}")
     print(f"  {year}年{month}月 考勤整合")
     print(f"  国家: {country} | 配置: {os.path.abspath(config_path)}")
     print("=" * 60)
@@ -147,7 +149,7 @@ def main():
         try:
             ok = _open_browser(html_path)
             if ok:
-                print("  已自动打开浏览器")
+                print("  已自动打开浏览器（若未弹出，请手动打开上方 HTML 路径）")
             else:
                 print("  无法自动打开浏览器，请手动打开:")
                 print(f"  {html_path}")
