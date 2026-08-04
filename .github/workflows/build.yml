@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build-macos:
-    name: Build macOS .app
+    name: Build macOS
     runs-on: macos-latest
     steps:
       - name: Checkout
@@ -27,7 +27,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyinstaller openpyxl
 
-      - name: Build .app
+      - name: Build
         run: |
           pyinstaller --noconfirm --clean --name "考勤工时工具" --onefile \
             --add-data "rules:rules" \
@@ -37,7 +37,12 @@ jobs:
       - name: Assemble Mac package folder
         run: |
           mkdir -p "考勤工时工具_Mac版"
-          cp -r "dist/考勤工时工具.app" "考勤工时工具_Mac版/"
+          if [ -d "dist/考勤工时工具.app" ]; then
+            cp -r "dist/考勤工时工具.app" "考勤工时工具_Mac版/"
+          else
+            cp "dist/考勤工时工具" "考勤工时工具_Mac版/考勤工时工具"
+            chmod +x "考勤工时工具_Mac版/考勤工时工具"
+          fi
           cp config_template.json "考勤工时工具_Mac版/"
           cp -r rules "考勤工时工具_Mac版/"
           cd "考勤工时工具_Mac版" && zip -r "../考勤工时工具_Mac版.zip" . -x "*.DS_Store"
